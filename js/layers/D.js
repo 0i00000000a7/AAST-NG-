@@ -38,7 +38,7 @@ addLayer('D', {
     },
   ],
   layerShown() {
-    return (player.D.unlocked || hm('C', 3)) && gcs('te', 25) >= 1
+    return player.D.unlocked || hm('C', 3)
   },
   gainMult() {
     mult = n(1)
@@ -50,6 +50,7 @@ addLayer('D', {
     mult = mult.mul(buyableEffect('B', 22))
     mult = mult.mul(hu('E', 93) ? ue('E', 93) : 1)
     mult = mult.mul(hu('a', 16) ? ue('a', 16) : 1)
+    if (mu("B", 16)) mult = mult.mul(ue("B", 16))
 
     mult = mult.pow(hu('A', 52) ? 1.5 : 1)
     mult = mult.pow(hc('A', 32) ? 1.5 : 1)
@@ -478,28 +479,35 @@ addLayer('D', {
         player.points = n(0)
       },
       tooltip: 'Reset your points when entering.',
-      goalDescription: '37.37 points /sec',
+      goalDescription: '42.42 points /sec',
       canComplete() {
-        return getPointGen().gte(37.37)
+        return getPointGen().gte(42.42)
       },
-      rewardDescription: "All Bbs' base x2",
+      rewardDescription() {
+        return "All Bbs' base x2, D^1.25 boosts AD mult base<br>" +
+        `Currently: ×${format(this.effect())}`
+      },
+      effect() {
+        return player.D.points.add(1).pow(1.25)
+          .softcap(1.5, 0.1)
+      },
     },
     12: {
       name: 'Dc2',
       completionLimit: 1,
       challengeDescription() {
-        return "All Bbs' effects are capped."
+        return "All Bbs' effects are capped. Heavily reduce Antimatter's Effect"
       },
       unlocked() {
         return hu('B', 56)
       },
-      goalDescription: '1e80 points. /sec',
+      goalDescription: '1.75e16 points. /sec',
       onEnter() {
         player.points = n(0)
       },
       tooltip: 'Reset your points when entering.',
       canComplete() {
-        return getPointGen().gte(1e80)
+        return getPointGen().gte(1.75e16)
       },
       rewardDescription: 'B Gainmult ^1.25.',
     },
@@ -512,13 +520,13 @@ addLayer('D', {
       unlocked() {
         return hu('B', 66)
       },
-      goalDescription: '250 points.',
+      goalDescription: '666.86 points.',
       onEnter() {
         player.points = n(0)
       },
       tooltip: 'Reset your points when entering.',
       canComplete() {
-        return player.points.gte(250)
+        return player.points.gte(666.86)
       },
       rewardDescription: 'Points ^1.1.',
     },
@@ -531,13 +539,13 @@ addLayer('D', {
       unlocked() {
         return hu('B', 66)
       },
-      goalDescription: 'get 1e65 A gainMult.',
+      goalDescription: 'get 1e89 A gainMult.',
       onEnter() {
         player.points = n(10)
       },
       tooltip: 'Reset your points to 10 when entering.',
       canComplete() {
-        return tmp.A.gainMult.gte(1e65)
+        return tmp.A.gainMult.gte(1e89)
       },
       rewardDescription: 'A and B x1e15 and A ^1.25.',
     },

@@ -156,7 +156,7 @@ addLayer('ac', {
       done() {
         return ue('A', 11).gte(1e30)
       },
-      tooltip: 'get the first exponential softcap (Sc37)',
+      tooltip: 'get the <del>first</del> exponential normal softcap (Sc37)',
     },
     41: {
       name: '22. Hidden Upgrades^2',
@@ -254,7 +254,7 @@ addLayer('ac', {
       done() {
         return player.points.gte('1.80e308')
       },
-      tooltip: 'Get 1.80e308 points.',
+      tooltip: 'Get 1.80e308 points. <br>Reward: Unlock Mastery.'
     },
     61: {
       name: '36. Year in B',

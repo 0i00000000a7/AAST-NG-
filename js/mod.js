@@ -15,6 +15,7 @@ let modInfo = {
     'layers/ach.js',
     'layers/softcaps.js',
     'layers/super-softcaps.js',
+    'layers/ma.js',
     'layers/test.js',
     'tree.js',
   ],
@@ -35,6 +36,11 @@ let VERSION = {
 
 let changelog = `
 <h1>Changelog:</h1><br>
+h2>v0.15 2025/7/11 21:10-2025/7/12 22:30</h2><br>
+<h3>- Added Mastery Layer.</h3><br>
+<h3>- Rebalanced Layer C and D.</h3><br>
+<h3>Endgame: 1e437 A (87 + <span style="color: rgb(255, 197, 215)">13</span> softcaps)</h3><br>
+
 <h2>v0.1 2025/7/11 14:30-2025/7/11 21:10</h2><br>
 <h3>- Added Super Softcap Layer.</h3><br>
 <h3>- Added Antimatter.</h3><br>
@@ -119,7 +125,7 @@ function getRawPointsGen() {
 
   gain = gain.mul(hu('a', 11) ? ue('a', 11) : 1)
 
-  if (hu('A', 12) && gain.gte(1)) gain = gain.pow(layers.A.antimatterEffect())
+  if (!hu('C', 13) && hu('A', 12) && gain.gte(1)) gain = gain.pow(layers.A.antimatterEffect())
   if (inChallenge('E', 31)) gain = gain.div(layers.E.challenges[31].nerf())
   if (inChallenge('A', 21)) gain = gain.pow(0.5)
   if (inChallenge('A', 31)) gain = gain.pow(0.15)
@@ -134,9 +140,13 @@ function getRawPointsGen() {
   if (hc('C', 11)) gain = gain.mul(1000)
   if (hc('C', 12)) gain = gain.mul(8000)
 
-  if (inChallenge('A', 32)) gain = gain.log10()
-  if (inChallenge('A', 41)) gain = gain.tetrate(0.1)
-  if (inChallenge('D', 21)) gain = gain.slog()
+  if (hu('C', 13) && hu('A', 12) && gain.gte(1)) gain = gain.pow(layers.A.antimatterEffect())
+  if (mu("C", 12)) gain = gain.pow(3)
+  if (hasAchievement("ac", 35)) gain = gain.pow(layers.ma.effect())
+  
+  if (inChallenge('A', 32)) gain = gain.max(1).log10()
+  if (inChallenge('A', 41)) gain = gain.max(1).log10().pow(30)
+  if (inChallenge('D', 21)) gain = gain.max(1).slog()
   if (inChallenge('D', 22)) gain = n(0)
   return gain
 }
@@ -152,7 +162,9 @@ function getPointGen() {
   if (gain.gte(1e35)) gain = gain.div(1e35).pow(0.9).mul(1e35) //Sc43
   if (gain.max(1).log10().gte(100)) gain = n(10).pow(gain.log10().sub(100).pow(0.8).add(100)) //Sc72
   if (gain.max(1).log10().gte(300)) gain = n(10).pow(gain.log10().sub(299).pow(0.75).add(299)) //Sc91
+    .overflow(Number.MAX_VALUE, 0.5)
   if (gain.max(1).log10().gte(500)) gain = n(10).pow(gain.log10().sub(499).pow(0.5).add(499)) //Sc98
+    .overflow("1e500", 0.75, 2)
   if (inChallenge('D', 11)) gain = n(10).pow(gain.max(1).log10().pow(0.1)) //Sc72boosted
 
   return gain
@@ -170,8 +182,8 @@ var shitDown = false
 // Display extra things at the top of the page
 var displayThings = [
   function () {
-    let a = 'Current endgame: 1e12 points'
-    if (isEndgame()) a = a + '<br>You are past endgame! Points is capped at 1e12.'
+    let a = 'Current endgame: 1e437 A'
+    if (isEndgame()) a = a + '<br>You are past endgame! A is capped at 1e437.'
     if (gcs('te', 12)) a = a + '<br>You have played the game for ' + formatTime(player.timePlayed) + '.'
     if (gcs('te', 13)) a = a + '<br>Current FPS: ' + format(1000 / (Date.now() - player.time)) + '.'
     if (gcs('te', 14)) a = a + '<br>Raw Points: ' + format(getRawPointsGen()) + '.'
@@ -182,7 +194,7 @@ var displayThings = [
 ]
 // Determines when the game "ends"
 function isEndgame() {
-  return player.points.gte(1e12)
+  return masteredUpgrade("A", 21)
 }
 
 // Less important things beyond this point!
@@ -326,7 +338,7 @@ Decimal.prototype.tetraflow = function (start, power) {
 function tetraflow(number, start, power) {
   // EXPERIMENTAL FUNCTION - x => 10^^((slog10(x)-slog10(s))*p+slog10(s))
   if (isNaN(number.mag)) return new Decimal(0)
-  start = E(start)
+  start = n(start)
   if (number.gte(start)) {
     let s = start.slog(10)
     // Fun Fact: if 0 < number.slog(10) - start.slog(10) < 1, such like overflow(number,start,power,start.slog(10).sub(1).floor())
@@ -343,3 +355,11 @@ function expPow(a, b) {
 function revExpPow(a, b) {
   return Decimal.pow(10, Decimal.max(a, 1).log10().add(1).root(b).sub(1))
 } // return expPow(a,Decimal.invert(b))
+
+function listItems(arr) {
+  if (!arr.length) return '';
+  if (arr.length === 1) return arr[0];
+  
+  const last = arr.pop();
+  return arr.join(', ') + ' and ' + last;
+}

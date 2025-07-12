@@ -239,7 +239,7 @@ addLayer('sc', {
     25: {
       title: 'ScU11',
       description: function () {
-        return 'Softcap Points boosts Ab1 base<br>Effect: ^' + format(this.effect())
+        return 'Softcap Points boosts antimatter generation.<br>Effect: ^' + format(this.effect())
       },
       effect() {
         let eff = player.sc.points.max(1).pow(0.1).log(2).max(1)
@@ -284,10 +284,10 @@ addLayer('sc', {
     32: {
       title: 'ScU14',
       description: function () {
-        return 'Softcap Points boosts D1 (ignore softcaps).<br>Effect: ^' + format(this.effect(), 3)
+        return 'Softcap Points boosts D1 (ignore softcaps).<br>Effect: ^' + format(this.effect())
       },
       effect() {
-        let eff = player.sc.points.max(25000).log(10).sub(4.4).pow(0.3).add(1).max(1)
+        let eff = player.sc.points.max(25000).log(10).sub(4.4).max(0).pow(0.3).add(1).max(1)
         return eff
       },
       tooltip: 'effect starts at ~25118.8',

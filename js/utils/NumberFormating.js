@@ -1,6 +1,7 @@
 function exponentialFormat(num, precision, mantissa = true) {
   let e = num.log10().floor()
   let m = num.div(Decimal.pow(10, e))
+  if (num.gte("ee9")) mantissa = false
   if (m.toStringWithDecimalPlaces(precision) == 10) {
     m = decimalOne
     e = e.add(1)

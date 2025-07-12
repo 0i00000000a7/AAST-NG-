@@ -21,7 +21,7 @@ addLayer('E', {
     return a
   },
   color: '#789A89',
-  requires: n('1e535'),
+  requires: n('1e538'),
   resource: 'E',
   baseResource: 'B',
   baseAmount() {
@@ -52,7 +52,7 @@ addLayer('E', {
     },
   ],
   layerShown() {
-    return (player.E.unlocked || hm('B', 7)) && gcs('te', 25) >= 1
+    return player.E.unlocked || hm('B', 7)
   },
   gainMult() {
     mult = n(1)
@@ -297,7 +297,8 @@ addLayer('E', {
     },
   },
   canReset() {
-    return !hm('E', 10) && player.B.points.gte('1e535')
+    return false
+    return !hm('E', 10) && player.B.points.gte('1e538')
   },
   microtabs: {
     stuff: {

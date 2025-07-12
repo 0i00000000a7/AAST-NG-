@@ -55,6 +55,7 @@ addLayer('C', {
     mult = mult.mul(hu('E', 93) ? ue('E', 93) : 1)
     mult = mult.mul(buyableEffect('B', 21))
     mult = mult.mul(hu('a', 15) ? ue('a', 15) : 1)
+    if (mu("B", 16)) mult = mult.mul(ue("B", 16))
 
     mult = mult.pow(hu('A', 45) ? 1.5 : 1)
     mult = mult.pow(hu('A', 46) ? 1.5 : 1)
@@ -150,35 +151,47 @@ addLayer('C', {
     11: {
       title: 'C1',
       description: function () {
-        return '100x points, 1x B passive generation.<br>layer C total: <br>' + format(this.effect()) + 'x'
+        return '100x points, 1x B passive generation, 2x Antimatter generation. Adjust some challenge requirements.<br>layer C total: <br>' + format(this.effect()) + 'x'
       },
       effect() {
         let eff = 100
-        let exp = 0.4
         if (hu('C', 12)) eff = eff * 20
         if (hu('C', 15)) eff = eff * 200
         if (hu('C', 24)) eff = eff * 1e20
         if (hu('C', 25)) eff = eff * 1e30
         if (hm('C', 3)) eff = eff * 1000
         if (inChallenge('C', 11)) eff = 1
+        eff = n(eff)
+        if (mu("C", 11)) eff = eff.mul(5e19)
+        eff = eff.overflow(2000, 0.75)
         if (n(eff).gte(1e5)) eff = n(eff).div(1e5).pow(0.4).mul(1e5) //Sc28
         if (n(eff).gte(1e10)) eff = n(eff).div(1e10).pow(0.4).mul(1e10) //Sc40
         eff = n(eff)
         return eff
       },
       cost: n(1),
+      canMaster: true,
+      masterCost: n(1e93),
+      masteredDesc: function () {
+        return '1e20x points and Antimatter Generation, 1x B passive generation. Adjust some challenge requirements.<br>layer C total: <br>' + format(this.effect()) + 'x'
+      },
     },
     12: {
       title: 'C2',
-      description: '20x points, 10x A and B',
+      description: '20x points, 10x A and B, 2x Antimatter.',
       cost: n(1),
       unlocked() {
         return hu(this.layer, 11)
       },
+      canMaster: true,
+      masterCost: n(1e162),
+      masteredDesc: function () {
+        return '^3 points and Antimatter Generation.'
+      },
     },
     13: {
       title: 'C3',
-      description: 'C^5 boosts points.',
+      description: 'C^5 boosts points. Antimatter affects after Ac3, 4, 5 and Cc1, 2.',
       cost: n(10),
       unlocked() {
         return hu(this.layer, 12)
@@ -344,17 +357,17 @@ addLayer('C', {
       name: 'Cc1',
       completionLimit: 1,
       challengeDescription() {
-        return 'Reset your points and points ^0.45,C1-C11 are disabled.'
+        return 'Reset your points and points ^0.45,C1-C11 are disabled,Antimatter is disabled.'
       },
       unlocked() {
         return hu('D', 15)
       },
-      goalDescription: '5e18 points.',
+      goalDescription: '3e9 points.',
       onEnter() {
         player.points = n(0)
       },
       canComplete() {
-        return player.points.gte(5e18)
+        return player.points.gte(3e9)
       },
       rewardDescription: 'x1000 points(ignore most challenge effects) and Softcap points ^1.1, unlock more A upgrades.',
     },
@@ -370,12 +383,11 @@ addLayer('C', {
       onEnter() {
         player.points = n(0)
       },
-      goalDescription: '1e42 points.',
+      goalDescription: '1e85 points.',
       canComplete() {
-        return player.points.gte(1e42)
+        return player.points.gte(1e85)
       },
-      rewardDescription: 'x8000 points(ignore most challenge effects), A ^1.025.',
+      rewardDescription: 'x1e800 points(ignore most challenge effects), A ^1.025.',
     },
-  },
-  canReset() { return false }
+  }
 }) //C

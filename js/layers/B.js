@@ -86,7 +86,14 @@ addLayer('B', {
     mult = mult.mul(hu('E', 92) ? ue('E', 92) : 1)
     mult = mult.mul(hu('a', 12) ? 3 : 1)
     mult = mult.mul(hu('a', 14) ? ue('a', 14) : 1)
+    mult = mult.mul(mu('B', 11) ? ue('B', 11) : 1)
+    if (mu("A", 11) && mu("A", 13)) mult = mult.mul(ue("A", 11))
+    if (mu("A", 15)) mult = mult.mul(ue("A", 15))
+    if (mu("B", 16)) mult = mult.mul(ue("B", 16))
 
+    if (mu("B", 14)) mult = mult.pow(1.25)
+    if (mu("B", 22)) mult = mult.pow(3)
+    if (mu("A", 21)) mult = mult.pow(ue("A", 21))
     mult = mult.pow(hu('B', 36) ? 1.1 : 1)
     mult = mult.pow(hu('C', 34) ? 1.1 : 1)
     mult = mult.pow(hu('D', 22) ? 1.2 : 1)
@@ -98,6 +105,7 @@ addLayer('B', {
     if (mult.gte(1e10)) mult = mult.div(1e10).pow(0.5).mul(1e10) //Sc54
     if (mult.gte(1e25)) mult = mult.div(1e25).pow(0.5).mul(1e25) //Sc63
     if (mult.gte(1e40)) mult = mult.div(1e40).pow(0.5).mul(1e40) //Sc69
+      .overflow(1e50, 0.5)
     if (mult.gte(1e100)) mult = mult.div(1e100).pow(0.5).mul(1e100) //Sc77
     if (mult.gte(1e250)) mult = mult.div(1e250).pow(0.5).mul(1e250) //Sc92
     if (mult.log10().gte(400)) mult = n(10).pow(mult.log10().sub(400).pow(0.5).add(400)) //Sc97
@@ -179,9 +187,9 @@ addLayer('B', {
       effectDescription: 'B ^1.15 and unlock more B upgrades.',
     },
     4: {
-      requirementDescription: 'Bm5: 1e200 total B',
+      requirementDescription: 'Bm5: 5e199 total B',
       done() {
-        return player[this.layer].total.gte('1e200')
+        return player[this.layer].total.gte('5e199')
       },
       effectDescription: 'unlock one A chal.<br>A buyables cost nothing and unlock Ab2.',
     },
@@ -201,9 +209,9 @@ addLayer('B', {
       effectDescription: 'Unlock an A upg.',
     },
     7: {
-      requirementDescription: 'Bm8: 1e535 total B',
+      requirementDescription: 'Bm8: 1e538 total B',
       done() {
-        return player[this.layer].total.gte('1e535')
+        return player[this.layer].total.gte('1e538')
       },
       effectDescription: 'Unlock the layer E.',
     },
@@ -215,18 +223,20 @@ addLayer('B', {
         return '5x points. 0.5x passive generate A.<br>layer B total:<br>' + format(this.effect()) + 'x'
       },
       effect() {
-        let eff = 5
-        if (hu('B', 12)) eff = eff * 5
-        if (hu('B', 13)) eff = eff * 5
-        if (hu('B', 15)) eff = eff * 5
-        if (hu('B', 24)) eff = eff * 10
-        if (hu('B', 25)) eff = eff * 10
-        if (hu('B', 31)) eff = eff * 20
-        if (hu('B', 36)) eff = eff * 1e3
-        if (hu('B', 42)) eff = eff * 1e10
-        if (hu('B', 64)) eff = eff * 5e4
-        if (hu('B', 72)) eff = eff * 1e240
-        eff = n(eff)
+        let eff = n(5)
+        if (mu("B", 11)) eff = eff.mul(2e249)
+        if (hu('B', 12)) eff = eff.mul(5)
+        if (mu("B", 12)) eff = eff.mul(2e249)
+        if (hu('B', 13)) eff = eff.mul(5)
+        if (hu('B', 15)) eff = eff.mul(5)
+        if (hu('B', 24)) eff = eff.mul(10)
+        if (hu('B', 25)) eff = eff.mul(10)
+        if (hu('B', 31)) eff = eff.mul(20)
+        if (hu('B', 36)) eff = eff.mul(1e3)
+        if (hu('B', 42)) eff = eff.mul(1e10)
+        if (hu('B', 64)) eff = eff.mul(5e4)
+        if (hu('B', 72)) eff = eff.mul(1e240)
+
         if (hu('B', 81)) eff = eff.mul('1e25000')
 
         if (hu('a', 13)) eff = eff.pow(ue('a', 13))
@@ -244,6 +254,11 @@ addLayer('B', {
         return eff
       },
       cost: n(10),
+      canMaster: true,
+      masterCost: n(1.5e124),
+      masteredDesc() {
+        return '1e250x points, A and B. 0.5x passive generate A.<br>layer B total:<br>' + format(this.effect()) + 'x'
+      }
     },
     12: {
       title: 'B2',
@@ -252,6 +267,9 @@ addLayer('B', {
       unlocked() {
         return hu(this.layer, 11)
       },
+      canMaster: true,
+      masterCost: n(5e128),
+      masteredDesc: "1e250x points, A and B."
     },
     13: {
       title: 'B3',
@@ -260,6 +278,9 @@ addLayer('B', {
       unlocked() {
         return hu(this.layer, 12)
       },
+      canMaster: true,
+      masterCost: n(5e133),
+      masteredDesc: "5x points, 50x Bb1, 2, 4, 5, 6 base."
     },
     14: {
       title: 'B4',
@@ -268,6 +289,9 @@ addLayer('B', {
       unlocked() {
         return hu(this.layer, 13)
       },
+      canMaster: true,
+      masterCost: n(2e138),
+      masteredDesc: "2x B, B^1.25"
     },
     15: {
       title: 'B5',
@@ -276,6 +300,9 @@ addLayer('B', {
       unlocked() {
         return hu(this.layer, 14)
       },
+      canMaster: true,
+      masterCost: n(2.5e182),
+      masteredDesc: "1e300x points, A and B. Antimatter boosts antimatter gain."
     },
     16: {
       title: 'B6',
@@ -287,6 +314,7 @@ addLayer('B', {
       effect() {
         let effb = 0.2
         let eff = player[this.layer].points.pow(effb)
+        if (mu("B", 16)) eff = eff.pow(10)
         if (hu('A', 44)) eff = eff.pow(15)
         if (eff.gte(2.5)) eff = eff.div(2.5).pow(0.5).mul(2.5) //Sc12
         if (eff.gte(1e4)) eff = eff.div(1e4).pow(0.1).mul(1e4) //Sc34
@@ -296,6 +324,9 @@ addLayer('B', {
       effectDisplay() {
         return format(this.effect()) + 'x'
       },
+      canMaster: true,
+      masterCost: n(5e192),
+      masteredDesc: "B^2 boosts Antimatter, A, B, C, D. Antimatter Dimension cost scaling is reduced. (4^n → 1.3^n)"
     },
     21: {
       title: 'B7',
@@ -309,6 +340,7 @@ addLayer('B', {
         if (hu('B', 32)) effb6 = effb6 * 1.5
         if (hu('C', 14)) effb6 = effb6 * 15
         if (hu('C', 22)) effb6 = effb6 * 10
+        if (mu('B', 21)) effb6 = effb6 * 1000
 
         let eff = player[this.layer].points.pow(effb6)
         if (eff.gte(4)) eff = eff.div(4).pow(0.5).mul(4) //Sc13
@@ -319,6 +351,9 @@ addLayer('B', {
       effectDisplay() {
         return format(this.effect()) + 'x'
       },
+      canMaster: true,
+      masterCost: n(1e214),
+      masteredDesc: "B^300 boosts points. Ab2 effect ×2."
     },
     22: {
       title: 'B8',
@@ -327,6 +362,10 @@ addLayer('B', {
       unlocked() {
         return hu(this.layer, 21)
       },
+      canMaster: true,
+      masterCost: n(1e220),
+      masteredDesc: "B^2 boosts B."
+
     },
     23: {
       title: 'B9',
@@ -589,7 +628,7 @@ addLayer('B', {
     64: {
       title: 'B34',
       description: 'B31 ^10 and 5e4x points.',
-      cost: n('1e150'),
+      cost: n('1e158'),
       unlocked() {
         return hm(this.layer, 3)
       },
@@ -597,7 +636,7 @@ addLayer('B', {
     65: {
       title: 'B35',
       description: 'Bb4-5 base x2',
-      cost: n('1e156'),
+      cost: n('1.5e158'),
       unlocked() {
         return hu(this.layer, 64)
       },
@@ -605,7 +644,7 @@ addLayer('B', {
     66: {
       title: 'B36',
       description: 'Unlock two D challenges.<br> Unlock A buyables.',
-      cost: n('1.56e156'),
+      cost: n('2e158'),
       unlocked() {
         return hu(this.layer, 65)
       },
@@ -788,6 +827,7 @@ addLayer('B', {
         let bas = n(3)
         if (hu('D', 36)) bas = bas.add(ue('D', 36))
         if (hc('D', 11)) bas = bas.mul(2)
+        if (mu("B", 13)) bas = bas.mul(50)
 
         if (hu('A', 54)) bas = bas.pow(ue('A', 54))
         if (inChallenge('E', 12)) bas = n(1)
@@ -857,6 +897,7 @@ addLayer('B', {
         if (hu('D', 36)) bas = bas.add(ue('D', 36))
         if (hu('B', 43)) bas = bas.mul(2)
         if (hc('D', 11)) bas = bas.mul(2)
+        if (mu("B", 13)) bas = bas.mul(50)
         if (hu('A', 54)) bas = bas.pow(ue('A', 54))
 
         if (inChallenge('E', 12)) bas = n(1)
@@ -973,6 +1014,7 @@ addLayer('B', {
         if (hu('D', 36) && hu('B', 42)) base = base.add(ue('D', 36))
         if (hc('D', 11)) base = base.mul(2)
         if (hu('B', 65)) base = base.mul(2)
+        if (mu("B", 13)) base = base.mul(50)
         if (hu('A', 55)) base = base.pow(ue('A', 55))
         if (base.gte(1e5)) base = base.div(1e5).pow(0.2).mul(1e5) //Sc83
         return base
@@ -1037,6 +1079,7 @@ addLayer('B', {
       base() {
         let base = n(3)
         if (hu('D', 36) && hu('B', 46)) base = base.add(ue('D', 36))
+        if (mu("B", 13)) base = base.mul(50)
         if (hc('D', 11)) base = base.mul(2)
         if (hu('B', 65)) base = base.mul(2)
         if (hu('A', 55)) base = base.pow(ue('A', 55))
@@ -1103,6 +1146,7 @@ addLayer('B', {
         let base = n(10)
         if (hu('D', 36) && hu('A', 56)) base = base.add(ue('D', 36))
         if (hc('D', 11)) base = base.mul(2)
+        if (mu("B", 13)) base = base.mul(50)
         if (hu('A', 56)) base = base.pow(ue('A', 56))
         if (hu('B', 65)) base = base.mul(2)
         if (base.gte(100)) base = base.div(100).pow(0.5).mul(100) //Sc80

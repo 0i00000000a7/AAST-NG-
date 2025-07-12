@@ -177,18 +177,29 @@ function loadVue() {
   Vue.component('upgrade', {
     props: ['layer', 'data'],
     template: `
-		<button v-if="tmp[layer].upgrades && tmp[layer].upgrades[data]!== undefined && tmp[layer].upgrades[data].unlocked" :id='"upgrade-" + layer + "-" + data' v-on:click="buyUpg(layer, data)" v-bind:class="{ [layer]: true, tooltipBox: true, upg: true, bought: hasUpgrade(layer, data), locked: (!(canAffordUpgrade(layer, data))&&!hasUpgrade(layer, data)), can: (canAffordUpgrade(layer, data)&&!hasUpgrade(layer, data))}"
+		<button v-if="!player.ma.clickables[11] && !masteredUpgrade(layer, data) && tmp[layer].upgrades && tmp[layer].upgrades[data]!== undefined && tmp[layer].upgrades[data].unlocked" :id='"upgrade-" + layer + "-" + data' v-on:click="buyUpg(layer, data)" v-bind:class="{ [layer]: true, tooltipBox: true, upg: true, bought: hasUpgrade(layer, data), locked: (!(canAffordUpgrade(layer, data))&&!hasUpgrade(layer, data)), can: (canAffordUpgrade(layer, data)&&!hasUpgrade(layer, data))}"
 			v-bind:style="[((!hasUpgrade(layer, data) && canAffordUpgrade(layer, data)) ? {'background-color': tmp[layer].color} : {}), tmp[layer].upgrades[data].style]">
 			<span v-if="layers[layer].upgrades[data].fullDisplay" v-html="run(layers[layer].upgrades[data].fullDisplay, layers[layer].upgrades[data])"></span>
 			<span v-else>
 				<span v-if= "tmp[layer].upgrades[data].title"><h3 v-html="tmp[layer].upgrades[data].title"></h3><br></span>
 				<span v-html="tmp[layer].upgrades[data].description"></span>
-				<span v-if="layers[layer].upgrades[data].effectDisplay"><br>Currently: <span v-html="run(layers[layer].upgrades[data].effectDisplay, layers[layer].upgrades[data])"></span></span>
+				<span v-if="tmp[layer].upgrades[data].effectDisplay"><br>Currently: <span v-html="run(layers[layer].upgrades[data].effectDisplay, layers[layer].upgrades[data])"></span></span>
 				<br><br>Cost: {{ formatWhole(tmp[layer].upgrades[data].cost) }} {{(tmp[layer].upgrades[data].currencyDisplayName ? tmp[layer].upgrades[data].currencyDisplayName : tmp[layer].resource)}}
 			</span>
 			<tooltip v-if="tmp[layer].upgrades[data].tooltip" :text="tmp[layer].upgrades[data].tooltip"></tooltip>
-
-			</button>
+		</button>
+		<button v-else-if="player.ma.clickables[11] || masteredUpgrade(layer, data)"
+		  v-bind:class="{ [layer]: true, tooltipBox: true, upg: true, mastered: masteredUpgrade(layer, data), locked: (!(canMasterUpgrade(layer, data))&&!masteredUpgrade(layer, data)), can: (canMasterUpgrade(layer, data)&&!masteredUpgrade(layer, data))}"
+		  v-bind:style="[((!masteredUpgrade(layer, data) && canMasterUpgrade(layer, data)) ? {'background-color': tmp[layer].color} : {}), tmp[layer].upgrades[data].style]" v-on:click="masterUpgrade(layer, data)">
+		  <span v-if="tmp[layer].upgrades[data].canMaster">
+		    <h3 style="color: rgb(0, 96, 128); text-shadow: 0px 0px 10px; font-weight: bold;">mastered </h3><h3 v-if= "tmp[layer].upgrades[data].title">{{ tmp[layer].upgrades[data].title }}</h3><br>
+		    <span v-html="tmp[layer].upgrades[data].masteredDesc"></span>
+		    <span v-if="tmp[layer].upgrades[data].effectDisplay"><br>Currently: <span v-html="run(layers[layer].upgrades[data].effectDisplay, layers[layer].upgrades[data])"></span></span>
+		    <br><br>Cost: {{ formatWhole(tmp[layer].upgrades[data].masterCost) }} {{(tmp[layer].upgrades[data].currencyDisplayName ? tmp[layer].upgrades[data].currencyDisplayName : tmp[layer].resource)}}
+		  </span>
+		  <span v-else>To Be Continued...</span>
+			<tooltip v-if="tmp[layer].upgrades[data].tooltip" :text="tmp[layer].upgrades[data].tooltip"></tooltip>
+		</button>
 		`,
   })
 
@@ -352,7 +363,6 @@ function loadVue() {
 			<span v-bind:style="{'white-space': 'pre-line'}" v-html="run(layers[layer].clickables[data].display, layers[layer].clickables[data])"></span>
 			<node-mark :layer='layer' :data='tmp[layer].clickables[data].marked'></node-mark>
 			<tooltip v-if="tmp[layer].clickables[data].tooltip" :text="tmp[layer].clickables[data].tooltip"></tooltip>
-
 		</button>
 		`,
     data() {
@@ -641,6 +651,19 @@ function loadVue() {
   Vue.component('tooltip', systemComponents['tooltip'])
   Vue.component('particle', systemComponents['particle'])
   Vue.component('bg', systemComponents['bg'])
+  
+  Vue.component('antimatter-dimension', {
+		props: ['layer', 'data'],
+		template: `
+			<div v-if="layers.A.buyables[data + 100].unlocked()" class="upgRow">
+				<div style="width:85px;font-size:12px;text-align:left">
+					Dimension {{(data + 1)}}<br/>
+					×{{format(buyableEffect("A", data + 100))}}
+				</div>
+				<div style="width:200px"><b>{{format(player.A.ad[data].add(getBuyableAmount("A", data + 100)))}}({{ formatWhole(getBuyableAmount("A", data + 100)) }})</b></div>
+			</div>
+		`
+	})
 
   app = new Vue({
     el: '#app',
