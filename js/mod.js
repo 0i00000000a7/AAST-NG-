@@ -36,7 +36,7 @@ let VERSION = {
 
 let changelog = `
 <h1>Changelog:</h1><br>
-h2>v0.15 2025/7/11 21:10-2025/7/12 22:30</h2><br>
+h2>v0.14 2025/7/11 21:10-2025/7/12 22:30</h2><br>
 <h3>- Added Mastery Layer.</h3><br>
 <h3>- Rebalanced Layer C and D.</h3><br>
 <h3>Endgame: 1e437 A (87 + <span style="color: rgb(255, 197, 215)">13</span> softcaps)</h3><br>
