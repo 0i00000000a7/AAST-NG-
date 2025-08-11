@@ -6,6 +6,8 @@ body {
   --color: #dfdfdf;
   --points: #ffffff;
   background: var(--background);
+  touch-action: manipulation;
+  text-size-adjust: none;
 }
 
 /* General text */
